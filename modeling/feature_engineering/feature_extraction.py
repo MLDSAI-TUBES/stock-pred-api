@@ -10,15 +10,19 @@ def generate_TAs_features(df):
     res = df.copy()
     for i in [7, 14, 21]:
         res[f'{i} DAYS MA'] = talib.MA(res['Close'], timeperiod=i)
+        res[f'{i} DAYS MA'] = res[f'{i} DAYS MA'].shift(1)
         res[f'RSI {i}'] = talib.RSI(res['Close'], timeperiod=i)
+        res[f'RSI {i}'] = res[f'RSI {i}'].shift(1)
         res[f'MFI {i}'] = talib.MFI(res['High'], res['Low'], 
                                 res['Close'], res['Volume'], 
                                 timeperiod=i)
+        res[f'MFI {i}'] = res[f'MFI {i}'].shift(1)
+
         if i == 7:
             res[f'{i} DAYS STD DEV'] = res['Close'].rolling(i).std()
+            res[f'{i} DAYS STD DEV'] = res[f'{i} DAYS STD DEV'].shift(1)
 
     res = res.dropna()
-    res['Close'] = res['Close'].shift(-1)
     return res
 
 def generate_date_related_features(df):
